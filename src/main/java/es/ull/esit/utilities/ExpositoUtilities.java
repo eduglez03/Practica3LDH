@@ -81,10 +81,10 @@ public class ExpositoUtilities {
     }
 
     public static void writeTextToFile(String file, String text) throws IOException {
-        BufferedWriter writer = new BufferedWriter(new FileWriter(file));
-        writer.write(text);
-        writer.flush();
-        writer.close();
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(file))) {
+            writer.write(text);
+            writer.flush();
+        }
     }
 
     public static String getFormat(String string) {
