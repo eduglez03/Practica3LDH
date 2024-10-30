@@ -48,6 +48,6 @@ public class PowerSet<E> implements Iterator<Set<E>>, Iterable<Set<E>> {
 
     @Override
     public Iterator<Set<E>> iterator() {
-        return this;
+        return this.iterator();
     }
 }
