@@ -69,7 +69,7 @@ public class TOPTWGRASP {
     
     public int aleatorySelectionRCL(int maxTRCL) {
         SecureRandom random = new SecureRandom(); // Compliant for security-sensitive use cases
-        byte bytes[] = new byte[20];
+        byte[] bytes = new byte[20];
         random.nextBytes(bytes);
 
        int low = 0;
