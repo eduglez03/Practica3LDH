@@ -66,17 +66,17 @@ public class TOPTWGRASP {
         System.out.println(" --> MEDIA: "+averageFitness);
         System.out.println(" --> MEJOR SOLUCION: "+bestSolution);
     }
-    
+
     public int aleatorySelectionRCL(int maxTRCL) {
         SecureRandom random = new SecureRandom(); // Compliant for security-sensitive use cases
         byte[] bytes = new byte[20];
         random.nextBytes(bytes);
 
-       int low = 0;
-       int high = maxTRCL;
-       int posSelected = random.nextInt(high-low) + low;
-       return posSelected;
+        int low = 0;
+        int high = maxTRCL;
+        return random.nextInt(high - low) + low;
     }
+
     
     public int fuzzySelectionBestFDRCL(ArrayList< double[] > rcl) {
         double[] membershipFunction = new double[rcl.size()];
