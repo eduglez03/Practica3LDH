@@ -53,7 +53,7 @@ public class TOPTWSolution {
         return false;
     }
     
-    public boolean equals(TOPTWSolution otherSolution) {
+    public boolean igual(TOPTWSolution otherSolution) {
         for (int i = 0; i < this.predecessors.length; i++) {
             if (this.predecessors[i] != otherSolution.predecessors[i]) {
                 return false;
