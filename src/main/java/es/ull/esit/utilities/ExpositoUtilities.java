@@ -40,10 +40,12 @@ public class ExpositoUtilities {
         } catch (Exception ex) {
             Logger.getLogger(ExpositoUtilities.class.getName()).log(Level.SEVERE, null, ex);
         } finally {
-            try {
-                reader.close();
-            } catch (IOException ex) {
-                Logger.getLogger(ExpositoUtilities.class.getName()).log(Level.SEVERE, null, ex);
+            if (reader != null) {
+                try {
+                    reader.close();
+                } catch (IOException ex) {
+                    Logger.getLogger(ExpositoUtilities.class.getName()).log(Level.SEVERE, null, ex);
+                }
             }
         }
     }
