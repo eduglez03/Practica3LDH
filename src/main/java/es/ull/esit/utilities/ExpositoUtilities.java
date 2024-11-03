@@ -1,3 +1,9 @@
+/**
+ * @file ExpositoUtilities.java
+ * @brief Clase que proporciona utilidades diversas para manejo de matrices,
+ * cadenas, y archivos.
+ */
+
 package es.ull.esit.utilities;
 
 import java.io.BufferedReader;
@@ -16,9 +22,21 @@ import java.util.logging.Logger;
 
 public class ExpositoUtilities {
 
+    /** @brief Ancho de columna por defecto */
     public static final int DEFAULT_COLUMN_WIDTH = 10;
+
+    /** @brief Alineación a la izquierda */
     public static final int ALIGNMENT_LEFT = 1;
+
+    /** @brief Alineación a la derecha */
     public static final int ALIGNMENT_RIGHT = 2;
+
+    /**
+     * @brief Obtiene la primera aparición de un elemento en un vector.
+     * @param vector Vector de enteros en el que buscar.
+     * @param element Elemento a buscar.
+     * @return Índice de la primera aparición del elemento o -1 si no se encuentra.
+     */
 
     private static int getFirstAppearance(int[] vector, int element) {
         for (int i = 0; i < vector.length; i++) {
@@ -29,6 +47,10 @@ public class ExpositoUtilities {
         return -1;
     }
 
+    /**
+     * @brief Imprime el contenido de un archivo en consola.
+     * @param file Ruta del archivo a leer.
+     */
     public static void printFile(String file) {
         BufferedReader reader = null;
         try {
@@ -40,7 +62,7 @@ public class ExpositoUtilities {
         } catch (Exception ex) {
             Logger.getLogger(ExpositoUtilities.class.getName()).log(Level.SEVERE, null, ex);
         } finally {
-            if (reader != null) {
+            if (reader != null) { // Comprobar si reader no es null antes de cerrar
                 try {
                     reader.close();
                 } catch (IOException ex) {
@@ -49,6 +71,12 @@ public class ExpositoUtilities {
             }
         }
     }
+
+    /**
+     * @brief Simplifica una cadena eliminando espacios extras y tabulaciones.
+     * @param string Cadena a simplificar.
+     * @return Cadena simplificada.
+     */
 
     public static String simplifyString(String string) {
         string = string.replaceAll("\t", " ");
@@ -59,6 +87,13 @@ public class ExpositoUtilities {
         return string;
     }
 
+
+    /**
+     * @brief Multiplica dos matrices.
+     * @param a Matriz de entrada a.
+     * @param b Matriz de entrada b.
+     * @return Matriz resultado de la multiplicación o null si no son compatibles.
+     */
     public static double[][] multiplyMatrices(double a[][], double b[][]) {
         if (a.length == 0) {
             return new double[0][0];
@@ -80,12 +115,25 @@ public class ExpositoUtilities {
         return ans;
     }
 
+    /**
+     * @brief Escribe texto en un archivo.
+     * @param file Ruta del archivo.
+     * @param text Texto a escribir.
+     * @throws IOException Si ocurre un error de escritura.
+     */
+
     public static void writeTextToFile(String file, String text) throws IOException {
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(file))) {
             writer.write(text);
             writer.flush();
         }
     }
+
+    /**
+     * @brief Formatea una cadena como entero o doble si es posible.
+     * @param string Cadena a formatear.
+     * @return Cadena formateada.
+     */
 
     public static String getFormat(String string) {
         if (!ExpositoUtilities.isInteger(string)) {
@@ -97,6 +145,12 @@ public class ExpositoUtilities {
         return string;
     }
 
+
+    /**
+     * @brief Formatea un número con tres decimales.
+     * @param value Valor numérico.
+     * @return Cadena formateada.
+     */
     public static String getFormat(double value) {
         DecimalFormat decimalFormatter = new DecimalFormat("0.000");
         DecimalFormatSymbols symbols = new DecimalFormatSymbols();
@@ -105,6 +159,13 @@ public class ExpositoUtilities {
         return decimalFormatter.format(value);
     }
 
+
+    /**
+     * @brief Formatea un número con decimales específicos.
+     * @param value Valor numérico.
+     * @param zeros Número de decimales.
+     * @return Cadena formateada.
+     */
     public static String getFormat(double value, int zeros) {
         String format = "0.";
         for (int i = 0; i < zeros; i++) {
@@ -117,10 +178,24 @@ public class ExpositoUtilities {
         return decimalFormatter.format(value);
     }
 
+
+    /**
+     * @brief Formatea una cadena con un ancho específico.
+     * @param string Cadena a formatear.
+     * @param width Ancho de la cadena.
+     * @return Cadena formateada.
+     */
     public static String getFormat(String string, int width) {
         return ExpositoUtilities.getFormat(string, width, ExpositoUtilities.ALIGNMENT_RIGHT);
     }
 
+    /**
+     * @brief Formatea una cadena con un ancho y alineación específicos.
+     * @param string Cadena a formatear.
+     * @param width Ancho de la cadena.
+     * @param alignment Alineación de la cadena.
+     * @return Cadena formateada.
+     */
     public static String getFormat(String string, int width, int alignment) {
         String format = "";
         if (alignment == ExpositoUtilities.ALIGNMENT_LEFT) {
@@ -134,6 +209,12 @@ public class ExpositoUtilities {
         return String.format(format, (Object[]) data);
     }
 
+    /**
+     * @brief Formatea un vector de cadenas con un ancho específico.
+     * @param strings Vector de cadenas a formatear.
+     * @param width Ancho de las cadenas.
+     * @return Cadena formateada.
+     */
     public static String getFormat(ArrayList<String> strings, int width) {
         String format = "";
         for (int i = 0; i < strings.size(); i++) {
@@ -146,6 +227,11 @@ public class ExpositoUtilities {
         return String.format(format, (Object[]) data);
     }
 
+    /**
+     * @brief Formatea un vector de enteros con un ancho específico.
+     * @param strings Vector de enteros a formatear.
+     * @return Cadena formateada.
+     */
     public static String getFormat(ArrayList<Integer> strings) {
         String format = "";
         for (int i = 0; i < strings.size(); i++) {
@@ -158,6 +244,12 @@ public class ExpositoUtilities {
         return String.format(format, (Object[]) data);
     }
 
+    /**
+     * @brief Formatea un vector de cadenas con un ancho específico.
+     * @param strings Vector de cadenas a formatear.
+     * @param width Ancho de las cadenas.
+     * @return Cadena formateada.
+     */
     public static String getFormat(String[] strings, int width) {
         int[] alignment = new int[strings.length];
         Arrays.fill(alignment, ExpositoUtilities.ALIGNMENT_RIGHT);
@@ -165,8 +257,15 @@ public class ExpositoUtilities {
         Arrays.fill(widths, width);
         return ExpositoUtilities.getFormat(strings, widths, alignment);
     }
-    
-        public static String getFormat(String[][] matrixStrings, int width) {
+
+
+    /**
+     * @brief Formatea un vector de cadenas con un ancho y alineación específicos.
+     * @param matrixStrings Vector de cadenas a formatear.
+     * @param width Ancho de las cadenas.
+     * @return Cadena formateada.
+     */
+    public static String getFormat(String[][] matrixStrings, int width) {
         String result = "";
         for (int i = 0; i < matrixStrings.length; i++) {
             String[] strings = matrixStrings[i];
@@ -182,6 +281,11 @@ public class ExpositoUtilities {
         return result;
     }
 
+    /**
+     * @brief Formatea un vector de cadenas con un ancho específico.
+     * @param strings Vector de cadenas a formatear.
+     * @return Cadena formateada.
+     */
     public static String getFormat(String[] strings) {
         int[] alignment = new int[strings.length];
         Arrays.fill(alignment, ExpositoUtilities.ALIGNMENT_RIGHT);
@@ -190,12 +294,25 @@ public class ExpositoUtilities {
         return ExpositoUtilities.getFormat(strings, widths, alignment);
     }
 
+    /**
+     * @brief Formatea un vector de cadenas con un ancho especificos.
+     * @param strings Vector de cadenas a formatear.
+     * @param width Ancho de las cadenas.
+     * @return Cadena formateada.
+     */
     public static String getFormat(String[] strings, int[] width) {
         int[] alignment = new int[strings.length];
         Arrays.fill(alignment, ExpositoUtilities.ALIGNMENT_RIGHT);
         return ExpositoUtilities.getFormat(strings, width, alignment);
     }
 
+    /**
+     * @brief Formatea un vector de cadenas con un ancho y alineación específicos.
+     * @param strings Vector de cadenas a formatear.
+     * @param width Ancho de las cadenas.
+     * @param alignment Alineación de las cadenas.
+     * @return Cadena formateada.
+     */
     public static String getFormat(String[] strings, int[] width, int[] alignment) {
         String format = "";
         for (int i = 0; i < strings.length; i++) {
@@ -212,6 +329,11 @@ public class ExpositoUtilities {
         return String.format(format, (Object[]) data);
     }
 
+    /**
+     * @brief Comprueba si una cadena es un número entero.
+     * @param str Cadena a comprobar.
+     * @return Verdadero si es un número entero, falso en caso contrario.
+     */
     public static boolean isInteger(String str) {
         try {
             Integer.parseInt(str);
@@ -221,6 +343,11 @@ public class ExpositoUtilities {
         return false;
     }
 
+    /**
+     * @brief Comprueba si una cadena es un número doble.
+     * @param str Cadena a comprobar.
+     * @return Verdadero si es un número doble, falso en caso contrario.
+     */
     public static boolean isDouble(String str) {
         try {
             Double.parseDouble(str);
@@ -230,6 +357,11 @@ public class ExpositoUtilities {
         return false;
     }
 
+    /**
+     * @brief Comprueba si una matriz es acrílica
+     * @param distanceMatrix Cadena a comprobar.
+     * @return Verdadero si es una matriz acrilica, falso en caso contrario.
+     */
     public static boolean isAcyclic(int[][] distanceMatrix) {
         int numRealTasks = distanceMatrix.length - 2;
         int node = 1;
@@ -243,6 +375,12 @@ public class ExpositoUtilities {
         return true;
     }
 
+    /**
+     * @brief Comprueba si hay un camino en una matriz de distancias
+     * @param distanceMatrix Matriz de distancias.
+     * @param node Nodo a comprobar.
+     * @return Verdadero si hay un camino, falso en caso contrario.
+     */
     public static boolean thereIsPath(int[][] distanceMatrix, int node) {
         HashSet<Integer> visits = new HashSet<>();
         HashSet<Integer> noVisits = new HashSet<>();
