@@ -1,4 +1,4 @@
-package es.ull.esit.top;
+package top;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -8,9 +8,14 @@ import java.io.IOException;
 import es.ull.esit.utilities.ExpositoUtilities;
 
 public class TOPTWReader {
-    
-    public static TOPTW readProblem(String filePath) {
-        TOPTW problem = null;
+
+    /**
+     * Método que lee un problema TOPTW de un fichero.
+     * @param filePath Ruta del fichero.
+     * @return Problema TOPTW.
+     */
+    public static top.TOPTW readProblem(String filePath) {
+        top.TOPTW problem = null;
         BufferedReader reader = null;
         try {
             File instaceFile = new File(filePath);
@@ -18,7 +23,7 @@ public class TOPTWReader {
             String line = reader.readLine();
             line = ExpositoUtilities.simplifyString(line);
             String[] parts =line.split(" ");
-            problem = new TOPTW(Integer.parseInt(parts[2]), Integer.parseInt(parts[1]));
+            problem = new top.TOPTW(Integer.parseInt(parts[2]), Integer.parseInt(parts[1]));
             line = reader.readLine();
             line = null; parts = null;
             for (int i = 0; i < problem.getPOIs()+1; i++) {
@@ -35,7 +40,7 @@ public class TOPTWReader {
                 }
                 else {
                     problem.setReadyTime(i, Double.parseDouble(parts[8]));
-                    problem.setDueTime(i, Double.parseDouble(parts[9]));                    
+                    problem.setDueTime(i, Double.parseDouble(parts[9]));
                 }
                 line = null; parts = null;
             }
@@ -56,5 +61,5 @@ public class TOPTWReader {
         problem.setMaxTimePerRoute(problem.getDueTime(0));
         return problem;
     }
-    
+
 }
