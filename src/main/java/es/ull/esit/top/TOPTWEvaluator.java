@@ -1,8 +1,17 @@
 package es.ull.esit.top;
 
+import es.ull.esit.top.TOPTWSolution;
+
+/**
+ * Evaluate the solution
+ */
 public class TOPTWEvaluator {
     public static double NO_EVALUATED = -1.0;
 
+    /**
+     * Evaluate the solution
+     * @param solution
+     */
     public void evaluate(TOPTWSolution solution) {
         /*CumulativeCVRP problem = solution.getProblem();
         double objectiveFunctionValue = 0.0;
