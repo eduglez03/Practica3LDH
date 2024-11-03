@@ -1,24 +1,22 @@
-package es.ull.esit.top;
+package top;
+
+import es.ull.esit.top.TOPTW;
+import es.ull.esit.top.TOPTWGRASP;
+import es.ull.esit.top.TOPTWReader;
+import es.ull.esit.top.TOPTWSolution;
 
 /**
- * Clase principal que contiene el método `main` para ejecutar el programa.
- *
- * Esta clase se encarga de inicializar un conjunto de instancias y
- * de procesarlas utilizando el algoritmo GRASP.
+ * Main class for the TOPTW problem.
  */
 public class mainTOPTW {
-
     /**
-     * Método principal que se ejecuta al iniciar el programa.
-     *
-     * @param args Argumentos de línea de comandos (no se utilizan en esta implementación).
+     * Main method.
+     * @param args the command line arguments
      */
     public static void main(String[] args) {
 
-        // Inicialización del arreglo de instancias
         String[] instances = new String[29];
 
-        // Carga de los nombres de archivo de las instancias
         instances[0] = "c101.txt"; instances[3] = "c104.txt"; instances[6] = "c107.txt";
         instances[1] = "c102.txt"; instances[4] = "c105.txt"; instances[7] = "c108.txt";
         instances[2] = "c103.txt"; instances[5] = "c106.txt"; instances[8] = "c109.txt";
@@ -32,29 +30,19 @@ public class mainTOPTW {
         instances[22] = "rc102.txt"; instances[25] = "rc105.txt"; instances[28] = "rc108.txt";
         instances[23] = "rc103.txt"; instances[26] = "rc106.txt";
 
-        // Iteración sobre cada instancia para procesarla
         for(int i = 0; i < instances.length; i++) {
-            // Construcción de la ruta de la instancia
-            String INSTANCE = "Instances/TOPTW/" + instances[i];
-
-            // Lectura del problema desde el archivo
+            String INSTANCE = "Instances/TOPTW/"+instances[i];
             TOPTW problem = TOPTWReader.readProblem(INSTANCE);
-
-            // Creación de la solución inicial
             TOPTWSolution solution = new TOPTWSolution(problem);
-
-            // Inicialización del algoritmo GRASP
             TOPTWGRASP grasp = new TOPTWGRASP(solution);
 
-            // Salida de información sobre la instancia actual
-            System.out.println(" --> Instance: " + instances[i]);
-
-            // Ejecución del algoritmo GRASP con diferentes parámetros
+            System.out.println(" --> Instance: "+instances[i]);
             grasp.GRASP(10000, 3);
             grasp.GRASP(10000, 5);
             grasp.GRASP(10000, 7);
             System.out.println("");
         }
     }
+
 }
 
