@@ -5,17 +5,24 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 
+/**
+ * TOPTWGRASP
+ */
 public class TOPTWGRASP {
- public static double NO_EVALUATED = -1.0;
-    
+    public static double NO_EVALUATED = -1.0;
+
     private TOPTWSolution solution;
     private int solutionTime;
 
+    /**
+     * Constructor de la clase
+     * @param sol
+     */
     public TOPTWGRASP(TOPTWSolution sol){
         this.solution = sol;
         this.solutionTime = 0;
     }
-    
+
     /*procedure GRASP(Max Iterations,Seed)
         1 Read Input();
         2 for k = 1, . . . , Max Iterations do
@@ -25,7 +32,7 @@ public class TOPTWGRASP {
         6 end;
         7 return Best Solution;
     end GRASP*/
-    
+
     /*procedure Greedy Randomized Construction(Seed)
         Solution ← ∅;
         Evaluate the incremental costs of the candidate elements;
@@ -37,14 +44,19 @@ public class TOPTWGRASP {
         end;
         return Solution;
     end Greedy Randomized Construction.*/
-    
+
+    /**
+     * Método GRASP
+     * @param maxIterations
+     * @param maxSizeRCL
+     */
     public void GRASP(int maxIterations, int maxSizeRCL) {
         double averageFitness = 0.0;
         double bestSolution = 0.0;
         for(int i = 0; i < maxIterations; i++) {
-            
+
             this.computeGreedySolution(maxSizeRCL);
-            
+
             // IMPRIMIR SOLUCION
             double fitness = this.solution.evaluateFitness();
             System.out.println(this.solution.getInfoSolution());
@@ -55,29 +67,38 @@ public class TOPTWGRASP {
                 bestSolution = fitness;
             }
             //double fitness = this.solution.printSolution();
-                   
+
             /******
-            * 
-            * BÚSQUEDA LOCAL
-            * 
-            */
+             *
+             * BÚSQUEDA LOCAL
+             *
+             */
         }
         averageFitness = averageFitness/maxIterations;
         System.out.println(" --> MEDIA: "+averageFitness);
         System.out.println(" --> MEJOR SOLUCION: "+bestSolution);
     }
 
+    /**
+     * Método de selección aleatoria de la lista restringida de candidatos
+     * @param maxTRCL
+     * @return
+     */
     public int aleatorySelectionRCL(int maxTRCL) {
         SecureRandom random = new SecureRandom(); // Compliant for security-sensitive use cases
-        byte[] bytes = new byte[20];
+        byte[] bytes = new byte[20]; // Declaración correcta del array
         random.nextBytes(bytes);
 
-        int low = 0;
-        int high = maxTRCL;
-        return random.nextInt(high - low) + low;
+        // Retorna el índice aleatorio calculado directamente, sin la variable temporal
+        return random.nextInt(maxTRCL);
     }
 
-    
+
+    /**
+     * Método de selección fuzzy de la lista restringida de candidatos
+     * @param rcl
+     * @return
+     */
     public int fuzzySelectionBestFDRCL(ArrayList< double[] > rcl) {
         double[] membershipFunction = new double[rcl.size()];
         double maxSc = this.getMaxScore();
@@ -94,7 +115,13 @@ public class TOPTWGRASP {
         }
         return posSelected;
     }
-    
+
+    /**
+     * Método de selección fuzzy de la lista restringida de candidatos
+     * @param rcl
+     * @param alpha
+     * @return
+     */
     public int fuzzySelectionAlphaCutRCL(ArrayList< double[] > rcl, double alpha) {
         ArrayList< double[] > rclAlphaCut = new ArrayList< double[] >();
         ArrayList< Integer > rclPos = new ArrayList< Integer >();
@@ -116,32 +143,36 @@ public class TOPTWGRASP {
         return posSelected;
     }
 
+    /**
+     * Método de construcción de la solución greedy
+     * @param maxSizeRCL
+     */
     public void computeGreedySolution(int maxSizeRCL) {
         // inicialización
         this.solution.initSolution();
-        
+
         // tiempo de salida y score por ruta y cliente
         ArrayList<ArrayList<Double>> departureTimesPerClient = new ArrayList<ArrayList<Double>>();
         ArrayList<Double> init = new ArrayList<Double>();
         for(int z = 0; z < this.solution.getProblem().getPOIs()+this.solution.getProblem().getVehicles(); z++) {init.add(0.0);}
         departureTimesPerClient.add(0, init);
-        
+
         // clientes
         ArrayList<Integer> customers = new ArrayList<Integer>();
         for(int j = 1; j <= this.solution.getProblem().getPOIs(); j++) { customers.add(j); }
-        
+
         // Evaluar coste incremental de los elementos candidatos
         ArrayList< double[] > candidates = this.comprehensiveEvaluation(customers, departureTimesPerClient);
-        
+
         Collections.sort(candidates, new Comparator<double[]>() {
-            public int compare(double[] a, double[] b) {   
+            public int compare(double[] a, double[] b) {
                 return Double.compare(a[a.length-2], b[b.length-2]);
             }
         });
 
         int maxTRCL = maxSizeRCL;
         boolean existCandidates = true;
-        
+
         while(!customers.isEmpty() && existCandidates) {
             if(!candidates.isEmpty()) {
                 //Construir lista restringida de candidatos
@@ -156,22 +187,22 @@ public class TOPTWGRASP {
                 double alpha = 0.8;
                 switch (selection) {
                     case 1:  posSelected = this.aleatorySelectionRCL(maxTRCL);  // Selección aleatoria
-                             break;
+                        break;
                     case 2:  posSelected = this.fuzzySelectionBestFDRCL(rcl);   // Selección fuzzy con mejor valor de alpha
-                             break;
+                        break;
                     case 3:  posSelected = this.fuzzySelectionAlphaCutRCL(rcl, alpha); // Selección fuzzy con alpha corte aleatoria
-                             break;
+                        break;
                     default: posSelected = this.aleatorySelectionRCL(maxTRCL);  // Selección aleatoria por defecto
-                             break;
+                        break;
                 }
-                
+
                 double[] candidateSelected = rcl.get(posSelected);
                 for(int j=0; j < customers.size(); j++) {
                     if(customers.get(j)==candidateSelected[0]) {
                         customers.remove(j);
                     }
-                }              
-                
+                }
+
                 updateSolution(candidateSelected, departureTimesPerClient);
 
             } else { // No hay candidatos a insertar en la solución, crear otra ruta
@@ -180,7 +211,7 @@ public class TOPTWGRASP {
                     ArrayList<Double> initNew = new ArrayList<Double>();
                     for(int z = 0; z < this.solution.getProblem().getPOIs()+this.solution.getProblem().getVehicles(); z++) {initNew.add(0.0);}
                     departureTimesPerClient.add(initNew);
-                } 
+                }
                 else {
                     existCandidates = false;
                 }
@@ -194,16 +225,21 @@ public class TOPTWGRASP {
                 }
             });
         }
-        
+
     }
-    
+
+    /**
+     * Método de actualización de la solución
+     * @param candidateSelected
+     * @param departureTimes
+     */
     public void updateSolution(double[] candidateSelected, ArrayList< ArrayList< Double > > departureTimes) {
         // Inserción del cliente en la ruta  return: cliente, ruta, predecesor, coste
         this.solution.setPredecessor((int)candidateSelected[0], (int)candidateSelected[2]);
         this.solution.setSuccessor((int)candidateSelected[0], this.solution.getSuccessor((int)candidateSelected[2]));
         this.solution.setSuccessor((int)candidateSelected[2], (int)candidateSelected[0]);
         this.solution.setPredecessor(this.solution.getSuccessor((int)candidateSelected[0]), (int)candidateSelected[0]);
-        
+
         // Actualización de las estructuras de datos y conteo a partir de la posición a insertar
         double costInsertionPre = departureTimes.get((int)candidateSelected[1]).get((int)candidateSelected[2]);
         ArrayList<Double> route = departureTimes.get((int)candidateSelected[1]);
@@ -212,22 +248,27 @@ public class TOPTWGRASP {
         do {
             suc = this.solution.getSuccessor(pre);
             costInsertionPre += this.solution.getDistance(pre, suc);
-            
+
             if(costInsertionPre < this.solution.getProblem().getReadyTime(suc)) {
                 costInsertionPre = this.solution.getProblem().getReadyTime(suc);
             }
             costInsertionPre += this.solution.getProblem().getServiceTime(suc);
-             
+
             if(!this.solution.isDepot(suc))
                 route.set(suc, costInsertionPre);
             pre = suc;
         } while((suc != depot));
-        
+
         // Actualiza tiempos
         departureTimes.set((int)candidateSelected[1], route);
     }
 
-    //return: cliente, ruta, predecesor, coste tiempo, score
+    /**
+     * Método de evaluación completa
+     * @param customers
+     * @param departureTimes
+     * @return
+     */
     public ArrayList< double[] > comprehensiveEvaluation(ArrayList<Integer> customers, ArrayList< ArrayList< Double > > departureTimes) {
         ArrayList< double[] > candidatesList = new ArrayList< double[] >();
         double[] infoCandidate = new double[5];
@@ -237,7 +278,7 @@ public class TOPTWGRASP {
         infoCandidate[2] = -1;
         infoCandidate[3] = Double.MAX_VALUE;
         infoCandidate[4] = -1;
-        
+
         for(int c = 0; c < customers.size(); c++) { // clientes disponibles
             for(int k = 0; k < this.solution.getCreatedRoutes(); k++) { // rutas creadas
                 validFinalInsertion = true;
@@ -257,16 +298,16 @@ public class TOPTWGRASP {
                         } else { costCand = timesUntilPre; }
                         costCand +=  this.solution.getProblem().getServiceTime(candidate);
                         if(costCand > this.solution.getProblem().getMaxTimePerRoute()) { validFinalInsertion = false; }
-                        
+
                         // Comprobar TW desde candidate hasta sucesor
                         double timesUntilSuc = costCand + this.solution.getDistance(candidate, suc);
-                        if(timesUntilSuc < (this.solution.getProblem().getDueTime(suc))) {                                
+                        if(timesUntilSuc < (this.solution.getProblem().getDueTime(suc))) {
                             double costSuc = 0;
                             if(timesUntilSuc < this.solution.getProblem().getReadyTime(suc)) {
                                 costSuc = this.solution.getProblem().getReadyTime(suc);
                             } else { costSuc = timesUntilSuc; }
                             costSuc +=  this.solution.getProblem().getServiceTime(suc);
-                            costInsertion = costSuc;                            
+                            costInsertion = costSuc;
                             if(costSuc > this.solution.getProblem().getMaxTimePerRoute()) { validFinalInsertion = false;}
 
                             int pre2=suc, suc2 = -1;
@@ -280,7 +321,7 @@ public class TOPTWGRASP {
                                         } else { costInsertion = timesUntilSuc2; }
                                         costInsertion += this.solution.getProblem().getServiceTime(suc2);
                                         if(costInsertion > this.solution.getProblem().getMaxTimePerRoute()) { validFinalInsertion = false; }
-                                    } else { validFinalInsertion = false; }         
+                                    } else { validFinalInsertion = false; }
                                     pre2 = suc2;
                                 } while((suc2 != depot) && validFinalInsertion);
                         } else { validFinalInsertion = false; }
@@ -291,15 +332,15 @@ public class TOPTWGRASP {
                             infoCandidate[0] = candidate; infoCandidate[1] = k; infoCandidate[2] = pre; infoCandidate[3] = costInsertion; infoCandidate[4] = this.solution.getProblem().getScore(candidate); // cliente, ruta, predecesor, coste, score
                         }
                     }
-                    
+
                     pre = suc;
                 } while(suc != depot);
             } //rutas creadas
-            
+
             // almacenamos en la lista de candidatos la mejor posición de inserción para el cliente
             if(infoCandidate[0]!=-1 && infoCandidate[1]!=-1 && infoCandidate[2]!=-1 && infoCandidate[3] != Double.MAX_VALUE && infoCandidate[4]!=-1) {
                 double[] infoCandidate2 = new double[5];
-                infoCandidate2[0] = infoCandidate[0];  infoCandidate2[1] = infoCandidate[1];  
+                infoCandidate2[0] = infoCandidate[0];  infoCandidate2[1] = infoCandidate[1];
                 infoCandidate2[2] = infoCandidate[2];  infoCandidate2[3] = infoCandidate[3];
                 infoCandidate2[4] = infoCandidate[4];
                 candidatesList.add(infoCandidate2);
@@ -310,25 +351,46 @@ public class TOPTWGRASP {
             infoCandidate[4] = -1;
         } // cliente
 
-        return candidatesList;        
+        return candidatesList;
     }
-    
+
+
+    /**
+     * Método getSolution
+     * @return
+     */
     public TOPTWSolution getSolution() {
         return solution;
     }
 
+    /**
+     * Método setSolution
+     * @param solution
+     */
     public void setSolution(TOPTWSolution solution) {
         this.solution = solution;
     }
 
+    /**
+     * Método getSolutionTime
+     * @return solutionTime
+     */
     public int getSolutionTime() {
         return solutionTime;
     }
 
+    /**
+     * Método setSolutionTime
+     * @param solutionTime
+     */
     public void setSolutionTime(int solutionTime) {
         this.solutionTime = solutionTime;
     }
-    
+
+    /**
+     * Método getMaxScore
+     * @return maxSc
+     */
     public double getMaxScore() {
         double maxSc = -1.0;
         for(int i = 0; i < this.solution.getProblem().getScore().length; i++) {
@@ -339,3 +401,4 @@ public class TOPTWGRASP {
     }
 
 }
+
