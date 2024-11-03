@@ -2,43 +2,45 @@ package es.ull.esit.utilities;
 
 import java.util.ArrayList;
 
+/**
+ * Class that implements the Bellman-Ford algorithm.
+ */
 public class BellmanFord {
-
     /**
-     *
+     * Value of infinity.
      */
     private static final int INFINITY = 999999;
     /**
-     *
+     * Distance matrix of the graph.
      */
     private final int[][] distanceMatrix;
     /**
-     *
+     * Edges of the graph.
      */
     private ArrayList<Integer> edges1 = null;
     /**
-     *
+     * Edges of the graph.
      */
     private ArrayList<Integer> edges2 = null;
     /**
-     *
+     * Number of nodes.
      */
     private final int nodes;
     /**
-     *
+     * Path of the algorithm.
      */
     private final ArrayList<Integer> path;
     /**
-     *
+     * Distances of the nodes.
      */
     private int[] distances = null;
     /**
-     *
+     * Value of the path.
      */
     private int value;
 
     /**
-     *
+     * Constructor of the class.
      * @param distanceMatrix
      * @param nodes
      * @param path
@@ -52,7 +54,7 @@ public class BellmanFord {
     }
 
     /**
-     *
+     * Calculates the edges of the graph.
      */
     private void calculateEdges() {
         this.edges1 = new ArrayList<>();
@@ -68,7 +70,7 @@ public class BellmanFord {
     }
 
     /**
-     *
+     * get the distances
      * @return
      */
     public int[] getDistances() {
@@ -76,7 +78,7 @@ public class BellmanFord {
     }
 
     /**
-     *
+     * get the value of the path
      * @return
      */
     public int getValue() {
@@ -84,7 +86,7 @@ public class BellmanFord {
     }
 
     /**
-     *
+     * Solves the Bellman-Ford algorithm.
      */
     public void solve() {
         int numEdges = this.edges1.size();
