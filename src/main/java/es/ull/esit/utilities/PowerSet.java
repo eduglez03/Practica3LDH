@@ -2,7 +2,10 @@ package es.ull.esit.utilities;
 
 import java.util.*;
 
-// Sirve para calcular todos los subconjuntos de un conjunto dado
+/**
+ * Clase que implementa un iterador para obtener el conjunto potencia de un conjunto dado.
+ * @param <E> Tipo de los elementos del conjunto.
+ */
 public class PowerSet<E> implements Iterator<Set<E>>, Iterable<Set<E>> {
 
     private E[] arr = null;
@@ -14,15 +17,23 @@ public class PowerSet<E> implements Iterator<Set<E>>, Iterable<Set<E>> {
         this.bset = new BitSet(this.arr.length + 1);
     }
 
+    /**
+     * Método que comprueba si hay más elementos en el conjunto potencia.
+     * @return true si hay más elementos, false en caso contrario.
+     */
     @Override
     public boolean hasNext() {
         return !this.bset.get(this.arr.length);
     }
 
+    /**
+     * Método que devuelve el siguiente conjunto del conjunto potencia.
+     * @return Conjunto del conjunto potencia.
+     */
     @Override
     public Set<E> next() {
-        if (!hasnext()) {
-            throw new NoSuchElementException("No more elements in the collection.");
+        if (!hasNext()) {
+            throw new NoSuchElementException("No hay más elementos.");
         }
 
         Set<E> returnSet = new TreeSet<>();
@@ -40,24 +51,25 @@ public class PowerSet<E> implements Iterator<Set<E>>, Iterable<Set<E>> {
                 this.bset.clear(i);
             }
         }
-
         return returnSet;
     }
 
-    public boolean hasnext() {
-        // Lógica para verificar si quedan elementos por iterar
-        // Esto depende de cómo defines la condición de finalización para tu iterador
-        return !this.bset.isEmpty(); // Ejemplo; ajustar según sea necesario
-    }
 
-
+    /**
+     * Método que elimina un elemento del conjunto potencia.
+     */
     @Override
     public void remove() {
         throw new UnsupportedOperationException("Not Supported!");
     }
 
+    /**
+     * Método que devuelve un iterador para recorrer el conjunto potencia.
+     * @return Iterador del conjunto potencia.
+     */
     @Override
     public Iterator<Set<E>> iterator() {
-        return this.iterator();
+        return new PowerSet<>(Set.of(arr)); // nueva instancia de PowerSet para cada recorrido
     }
+
 }
